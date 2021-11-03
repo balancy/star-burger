@@ -1,7 +1,6 @@
-import json
-
 from django.http import JsonResponse
 from django.templatetags.static import static
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -74,7 +73,10 @@ def product_list_api(request):
 def register_order(request):
     order_data = check_request_data(request.data)
 
-    if not 'error' in order_data:
+    if 'error' in order_data:
+        return Response(order_data, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
         new_order = Order(
             first_name=order_data['firstname'],
             last_name=order_data['lastname'],
@@ -93,5 +95,7 @@ def register_order(request):
         )
 
         OrderPosition.objects.bulk_create(order_positions)
+    except Exception as e:
+        return Response({'error': e}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(order_data)
