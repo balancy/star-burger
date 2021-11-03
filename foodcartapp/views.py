@@ -94,4 +94,4 @@ def register_order(request):
 
     OrderPosition.objects.bulk_create(order_positions)
 
-    return Response(serializer.data)
+    return Response(OrderSerializer(new_order).data)

@@ -15,6 +15,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
+            'id',
             'address',
             'firstname',
             'lastname',
@@ -22,14 +23,18 @@ class OrderSerializer(serializers.ModelSerializer):
             'products',
         ]
 
+    id = serializers.IntegerField(read_only=True)
     firstname = serializers.CharField(source='first_name')
     lastname = serializers.CharField(source='last_name')
     phonenumber = serializers.CharField(source='contact_phone')
     products = serializers.ListField(
-        child=OrderPositionSerializer(), allow_empty=False
+        child=OrderPositionSerializer(), allow_empty=False, write_only=True
     )
 
     def validate_phonenumber(self, value):
         if not ph_n.is_valid_number(ph_n.parse(value, 'RU')):
             raise ValidationError('Некорректное значение')
         return value
+
+    def create(self, validated_data):
+        return Order.objects.create(**validated_data)
