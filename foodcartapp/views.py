@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 
 from .models import Order, OrderPosition, Product
+from .utils import check_request_data
 
 
 def banners_list_api(request):
@@ -71,25 +72,26 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    order_data = request.data
+    order_data = check_request_data(request.data)
 
-    new_order = Order(
-        first_name=order_data['firstname'],
-        last_name=order_data['lastname'],
-        address=order_data.get('address', ''),
-        contact_phone=order_data['phonenumber'],
-    )
-    new_order.save()
-
-    order_positions = (
-        OrderPosition(
-            product=Product.objects.get(id=item['product']),
-            order=new_order,
-            quantity=item['quantity'],
+    if not 'error' in order_data:
+        new_order = Order(
+            first_name=order_data['firstname'],
+            last_name=order_data['lastname'],
+            address=order_data.get('address', ''),
+            contact_phone=order_data['phonenumber'],
         )
-        for item in order_data['products']
-    )
+        new_order.save()
 
-    OrderPosition.objects.bulk_create(order_positions)
+        order_positions = (
+            OrderPosition(
+                product=Product.objects.get(id=item['product']),
+                order=new_order,
+                quantity=item['quantity'],
+            )
+            for item in order_data['products']
+        )
+
+        OrderPosition.objects.bulk_create(order_positions)
 
     return Response(order_data)
