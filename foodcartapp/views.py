@@ -1,12 +1,12 @@
+import json
+
 from django.http import JsonResponse
 from django.templatetags.static import static
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-
 from .models import Order, OrderPosition, Product
-from .utils import check_request_data
+from .serializers import OrderSerializer
 
 
 def banners_list_api(request):
@@ -71,31 +71,27 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    order_data = check_request_data(request.data)
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
 
-    if 'error' in order_data:
-        return Response(order_data, status=status.HTTP_400_BAD_REQUEST)
+    order_data = serializer.validated_data
 
-    try:
-        new_order = Order(
-            first_name=order_data['firstname'],
-            last_name=order_data['lastname'],
-            address=order_data.get('address', ''),
-            contact_phone=order_data['phonenumber'],
+    new_order = Order.objects.create(
+        first_name=order_data['first_name'],
+        last_name=order_data['last_name'],
+        address=order_data['address'],
+        contact_phone=order_data['contact_phone'],
+    )
+
+    order_positions = [
+        OrderPosition(
+            product=item['product'],
+            order=new_order,
+            quantity=item['quantity'],
         )
-        new_order.save()
+        for item in order_data['products']
+    ]
 
-        order_positions = (
-            OrderPosition(
-                product=Product.objects.get(id=item['product']),
-                order=new_order,
-                quantity=item['quantity'],
-            )
-            for item in order_data['products']
-        )
+    OrderPosition.objects.bulk_create(order_positions)
 
-        OrderPosition.objects.bulk_create(order_positions)
-    except Exception as e:
-        return Response({'error': e}, status=status.HTTP_400_BAD_REQUEST)
-
-    return Response(order_data)
+    return Response(serializer.data)
