@@ -88,6 +88,7 @@ def register_order(request):
             product=item['product'],
             order=new_order,
             quantity=item['quantity'],
+            price=item['product'].price,
         )
         for item in order_data['products']
     ]

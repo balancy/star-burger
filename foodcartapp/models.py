@@ -114,8 +114,7 @@ class OrderQuerySet(models.QuerySet):
     def with_total_prices(self):
         return self.annotate(
             total_price=Sum(
-                F('order_positions__quantity')
-                * F('order_positions__product__price')
+                F('order_positions__quantity') * F('order_positions__price')
             )
         )
 
@@ -183,6 +182,14 @@ class OrderPosition(models.Model):
         on_delete=models.CASCADE,
         related_name='order_positions',
         verbose_name='заказ',
+    )
+
+    price = models.DecimalField(
+        'стоимость',
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        default=0,
     )
 
     class Meta:
