@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils.translation import gettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -120,6 +121,26 @@ class Order(models.Model):
     )
 
     contact_phone = PhoneNumberField('номер телефона')
+
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.SET_NULL,
+        related_name='orders',
+        verbose_name='ресторан',
+        null=True,
+        blank=True,
+    )
+
+    class OrderStatus(models.TextChoices):
+        PROCESSED = 'PROCESSED', _('обработан')
+        UNPROCESSED = 'UNPROCESSED', _('не обработан')
+
+    status = models.CharField(
+        max_length=11,
+        choices=OrderStatus.choices,
+        default=OrderStatus.UNPROCESSED,
+        verbose_name='статус',
+    )
 
     class Meta:
         verbose_name = 'заказ'
