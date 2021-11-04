@@ -114,7 +114,6 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderPositionInline(admin.TabularInline):
     model = OrderPosition
     extra = 0
-    readonly_fields = ['price', 'quantity']
 
 
 @admin.register(Order)
