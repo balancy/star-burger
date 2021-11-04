@@ -121,6 +121,8 @@ def view_orders(request):
         request,
         template_name='order_items.html',
         context={
-            'order_items': Order.objects.filter(status=UNPROCESSED),
+            'order_items': Order.objects.filter(
+                status=UNPROCESSED
+            ).with_total_prices(),
         },
     )
