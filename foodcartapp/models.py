@@ -152,6 +152,8 @@ class Order(models.Model):
         verbose_name='статус',
     )
 
+    comment = models.TextField("комментарий", blank=True, max_length=200)
+
     objects = OrderQuerySet.as_manager()
 
     class Meta:
