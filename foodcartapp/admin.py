@@ -120,6 +120,8 @@ class OrderPositionInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'contact_phone', 'status', 'restaurant')
+
     inlines = [
         OrderPositionInline,
     ]

@@ -142,8 +142,8 @@ class Order(models.Model):
     )
 
     class OrderStatus(models.TextChoices):
-        PROCESSED = 'PROCESSED', _('обработан')
-        UNPROCESSED = 'UNPROCESSED', _('не обработан')
+        PROCESSED = 'PROCESSED', _('Обработанный')
+        UNPROCESSED = 'UNPROCESSED', _('Необработанный')
 
     status = models.CharField(
         max_length=11,
@@ -159,10 +159,7 @@ class Order(models.Model):
         verbose_name_plural = 'заказы'
 
     def __str__(self):
-        return (
-            f'{self.__class__.__name__} '
-            f'от {self.first_name} {self.last_name}'
-        )
+        return f'Заказ от {self.first_name} {self.last_name}'
 
 
 class OrderPosition(models.Model):
