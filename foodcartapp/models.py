@@ -172,6 +172,17 @@ class Order(models.Model):
         null=True,
     )
 
+    class OrderPaymentMethod(models.TextChoices):
+        CASH = 'CASH', _('Наличностью')
+        ONLINE = 'ONLINE', _('Онлайн')
+
+    payment_method = models.CharField(
+        max_length=6,
+        choices=OrderPaymentMethod.choices,
+        default=OrderPaymentMethod.ONLINE,
+        verbose_name='способ оплаты',
+    )
+
     objects = OrderQuerySet.as_manager()
 
     class Meta:
