@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import F, Sum
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
@@ -152,7 +153,24 @@ class Order(models.Model):
         verbose_name='статус',
     )
 
-    comment = models.TextField("комментарий", blank=True, max_length=200)
+    comment = models.TextField('комментарий', blank=True, max_length=200)
+
+    registered_at = models.DateTimeField(
+        'дата регистрации',
+        default=timezone.now,
+    )
+
+    called_at = models.DateTimeField(
+        'дата звонка',
+        blank=True,
+        null=True,
+    )
+
+    delivered_at = models.DateTimeField(
+        'дата доставки',
+        blank=True,
+        null=True,
+    )
 
     objects = OrderQuerySet.as_manager()
 
