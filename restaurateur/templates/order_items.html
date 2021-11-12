@@ -21,12 +21,13 @@
       <th>Телефон</th>
       <th>Адрес доставки</th>
       <th>Комментарий</th>
+      <th>Рестораны</th>
       <th>Ссылка на админку</th>
     </tr>
 
     {% for item in order_items %}
       <tr>
-        <td>{{ item.id }}</td>
+        <td>{{ item.pk }}</td>
         <td>{{ item.get_status_display }}</td>
         <td>{{ item.get_payment_method_display }}</td>
         <td>{{ item.total_price }}</td>
@@ -34,7 +35,18 @@
         <td>{{ item.contact_phone }}</td>
         <td>{{ item.address }}</td>
         <td>{{ item.comment }}</td>
-        <td><a href="{% url "admin:foodcartapp_order_change" object_id=item.id %}?redirect_to={{ request.path|urlencode }}">Редактировать</td>
+        <td>
+          <details>
+              <summary>Развернуть</summary>
+              <ul>
+                {% for restaurant in item.matching_restaurants%}
+                  <li>{{ restaurant.name }}</li>
+                {% endfor %}
+              </ul>
+          </details>
+        </td>
+        <td></td>
+        <td><a href="{% url "admin:foodcartapp_order_change" object_id=item.pk %}?redirect_to={{ request.path|urlencode }}">Редактировать</td>
       </tr>
     {% endfor %}
    </table>

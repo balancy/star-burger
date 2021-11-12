@@ -1,14 +1,15 @@
-from django import forms
-from django.shortcuts import redirect, render
-from django.views import View
-from django.urls import reverse_lazy
-from django.contrib.auth.decorators import user_passes_test
+from collections import Counter
 
+from django import forms
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views import View
 
 
-from foodcartapp.models import Order, Product, Restaurant
+from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
 
 
 class Login(forms.Form):
@@ -113,16 +114,56 @@ def view_restaurants(request):
     )
 
 
+def populate_orders_with_matching_restaurants(orders):
+    """Populate orders with matching restaurants (Restaurants that could handle
+    all corresponding order positions).
+
+    Args:
+        orders: orders queryset
+    """
+
+    available_menu_items = RestaurantMenuItem.objects.select_related(
+        'restaurant',
+        'product',
+    ).filter(availability=True)
+
+    for order in orders:
+        order_products = [
+            order_position.product
+            for order_position in order.order_positions.all()
+        ]
+
+        restaurants_with_at_least_one_item = [
+            menu_item.restaurant
+            for menu_item in available_menu_items
+            if menu_item.product in order_products
+        ]
+
+        order.matching_restaurants = [
+            restaurant
+            for restaurant, total_items in Counter(
+                restaurants_with_at_least_one_item
+            ).items()
+            if total_items >= len(order_products)
+        ]
+
+
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
     UNPROCESSED = 'UNPROCESSED'
+
+    orders = (
+        Order.objects.prefetch_related('order_positions__product')
+        .filter(status=UNPROCESSED)
+        .with_total_prices()
+    )
+
+    populate_orders_with_matching_restaurants(orders)
 
     return render(
         request,
         template_name='order_items.html',
         context={
-            'order_items': Order.objects.filter(
-                status=UNPROCESSED
-            ).with_total_prices(),
+            'order_items': orders,
         },
     )
