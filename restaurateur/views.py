@@ -1,15 +1,17 @@
 from collections import Counter
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-
+from geopy import distance
 
 from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
+from .utils import fetch_coordinates
 
 
 class Login(forms.Form):
@@ -114,12 +116,13 @@ def view_restaurants(request):
     )
 
 
-def populate_orders_with_matching_restaurants(orders):
-    """Populate orders with matching restaurants (Restaurants that could handle
-    all corresponding order positions).
+def add_restaurants_with_distances_for_orders(orders, api_token):
+    """Find matching restaurants and calculate distances to them for orders
+    (Restaurants that could handle all corresponding order positions).
 
     Args:
         orders: orders queryset
+        api_token: yandex api token to retrieve coordinates
     """
 
     available_menu_items = RestaurantMenuItem.objects.select_related(
@@ -139,7 +142,7 @@ def populate_orders_with_matching_restaurants(orders):
             if menu_item.product in order_products
         ]
 
-        order.matching_restaurants = [
+        matching_restaurants = [
             restaurant
             for restaurant, total_items in Counter(
                 restaurants_with_at_least_one_item
@@ -147,10 +150,32 @@ def populate_orders_with_matching_restaurants(orders):
             if total_items >= len(order_products)
         ]
 
+        client_coords = fetch_coordinates(api_token, order.address)
+
+        restaurants_with_distances = [
+            (
+                restaurant,
+                '{:.3f}'.format(
+                    distance.distance(
+                        client_coords,
+                        fetch_coordinates(api_token, restaurant.name),
+                    ).km
+                ),
+            )
+            for restaurant in matching_restaurants
+        ]
+
+        order.restaurants_with_distances = sorted(
+            restaurants_with_distances,
+            key=lambda x: x[1],
+        )
+
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
     UNPROCESSED = 'UNPROCESSED'
+
+    yandex_api_token = settings.YANDEX_API_TOKEN
 
     orders = (
         Order.objects.prefetch_related('order_positions__product')
@@ -158,7 +183,7 @@ def view_orders(request):
         .with_total_prices()
     )
 
-    populate_orders_with_matching_restaurants(orders)
+    add_restaurants_with_distances_for_orders(orders, yandex_api_token)
 
     return render(
         request,

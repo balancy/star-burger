@@ -39,13 +39,12 @@
           <details>
               <summary>Развернуть</summary>
               <ul>
-                {% for restaurant in item.matching_restaurants%}
-                  <li>{{ restaurant.name }}</li>
+                {% for restaurant, distance in item.restaurants_with_distances %}
+                  <li> {{ restaurant.name }} - {{ distance }} km</li>
                 {% endfor %}
               </ul>
           </details>
         </td>
-        <td></td>
         <td><a href="{% url "admin:foodcartapp_order_change" object_id=item.pk %}?redirect_to={{ request.path|urlencode }}">Редактировать</td>
       </tr>
     {% endfor %}
