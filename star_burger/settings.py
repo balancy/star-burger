@@ -21,6 +21,7 @@ YANDEX_API_TOKEN = env.str('YANDEX_API_TOKEN')
 
 INSTALLED_APPS = [
     'foodcartapp.apps.FoodcartappConfig',
+    'geoposition.apps.GeopositionConfig',
     'restaurateur.apps.RestaurateurConfig',
     'django.contrib.admin',
     'django.contrib.auth',

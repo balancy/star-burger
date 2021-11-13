@@ -1,5 +1,3 @@
-from collections import Counter
-
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
@@ -8,10 +6,10 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from geopy import distance
 
 from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
-from .utils import fetch_coordinates
+from .utils import add_matching_restaurants_to_orders
+from geoposition.handle_coordinates import check_places_presence_in_db
 
 
 class Login(forms.Form):
@@ -116,74 +114,24 @@ def view_restaurants(request):
     )
 
 
-def add_restaurants_with_distances_for_orders(orders, api_token):
-    """Find matching restaurants and calculate distances to them for orders
-    (Restaurants that could handle all corresponding order positions).
+@user_passes_test(is_manager, login_url='restaurateur:login')
+def view_orders(request):
+    apikey = settings.YANDEX_API_TOKEN
 
-    Args:
-        orders: orders queryset
-        api_token: yandex api token to retrieve coordinates
-    """
+    orders = (
+        Order.objects.prefetch_related('order_positions__product')
+        .filter(status='UNPROCESSED')
+        .with_total_prices()
+    )
 
     available_menu_items = RestaurantMenuItem.objects.select_related(
         'restaurant',
         'product',
     ).filter(availability=True)
 
-    for order in orders:
-        order_products = [
-            order_position.product
-            for order_position in order.order_positions.all()
-        ]
+    check_places_presence_in_db(orders, available_menu_items, apikey)
 
-        restaurants_with_at_least_one_item = [
-            menu_item.restaurant
-            for menu_item in available_menu_items
-            if menu_item.product in order_products
-        ]
-
-        matching_restaurants = [
-            restaurant
-            for restaurant, total_items in Counter(
-                restaurants_with_at_least_one_item
-            ).items()
-            if total_items >= len(order_products)
-        ]
-
-        client_coords = fetch_coordinates(api_token, order.address)
-
-        restaurants_with_distances = [
-            (
-                restaurant,
-                '{:.3f}'.format(
-                    distance.distance(
-                        client_coords,
-                        fetch_coordinates(api_token, restaurant.name),
-                    ).km
-                ),
-            )
-            for restaurant in matching_restaurants
-        ]
-
-        order.restaurants_with_distances = sorted(
-            restaurants_with_distances,
-            key=lambda x: x[1],
-        )
-
-
-@user_passes_test(is_manager, login_url='restaurateur:login')
-def view_orders(request):
-    UNPROCESSED = 'UNPROCESSED'
-
-    yandex_api_token = settings.YANDEX_API_TOKEN
-
-    orders = (
-        Order.objects.prefetch_related('order_positions__product')
-        .filter(status=UNPROCESSED)
-        .with_total_prices()
-    )
-
-    add_restaurants_with_distances_for_orders(orders, yandex_api_token)
+    add_matching_restaurants_to_orders(orders, available_menu_items)
 
     return render(
         request,
