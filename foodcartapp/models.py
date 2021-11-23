@@ -121,8 +121,15 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
-    first_name = models.CharField('имя', max_length=50)
+    class OrderStatus(models.TextChoices):
+        PROCESSED = 'PROCESSED', _('Обработанный')
+        UNPROCESSED = 'UNPROCESSED', _('Необработанный')
 
+    class OrderPaymentMethod(models.TextChoices):
+        CASH = 'CASH', _('Наличностью')
+        ONLINE = 'ONLINE', _('Онлайн')
+
+    first_name = models.CharField('имя', max_length=50)
     last_name = models.CharField('фамилия', max_length=50)
 
     address = models.CharField(
@@ -141,10 +148,6 @@ class Order(models.Model):
         null=True,
         blank=True,
     )
-
-    class OrderStatus(models.TextChoices):
-        PROCESSED = 'PROCESSED', _('Обработанный')
-        UNPROCESSED = 'UNPROCESSED', _('Необработанный')
 
     status = models.CharField(
         max_length=11,
@@ -171,10 +174,6 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
-
-    class OrderPaymentMethod(models.TextChoices):
-        CASH = 'CASH', _('Наличностью')
-        ONLINE = 'ONLINE', _('Онлайн')
 
     payment_method = models.CharField(
         max_length=6,
