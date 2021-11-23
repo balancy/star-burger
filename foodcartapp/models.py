@@ -128,6 +128,7 @@ class Order(models.Model):
     class OrderPaymentMethod(models.TextChoices):
         CASH = 'CASH', _('Наличностью')
         ONLINE = 'ONLINE', _('Онлайн')
+        UNDEFINED = 'UNDEFINED', _('Не указано')
 
     first_name = models.CharField('имя', max_length=50)
     last_name = models.CharField('фамилия', max_length=50)
@@ -157,7 +158,7 @@ class Order(models.Model):
         db_index=True,
     )
 
-    comment = models.TextField('комментарий', blank=True, max_length=200)
+    comment = models.TextField('комментарий', blank=True)
 
     registered_at = models.DateTimeField(
         'дата регистрации',
@@ -180,9 +181,9 @@ class Order(models.Model):
     )
 
     payment_method = models.CharField(
-        max_length=6,
+        max_length=9,
         choices=OrderPaymentMethod.choices,
-        default=OrderPaymentMethod.ONLINE,
+        default=OrderPaymentMethod.UNDEFINED,
         verbose_name='способ оплаты',
         db_index=True,
     )
@@ -206,7 +207,8 @@ class OrderPosition(models.Model):
     )
 
     quantity = models.IntegerField(
-        'количество', default=1, validators=[MinValueValidator(1)]
+        'количество',
+        validators=[MinValueValidator(1)],
     )
 
     order = models.ForeignKey(
@@ -221,7 +223,6 @@ class OrderPosition(models.Model):
         max_digits=5,
         decimal_places=2,
         validators=[MinValueValidator(0)],
-        default=0,
     )
 
     class Meta:
