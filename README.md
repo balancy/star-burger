@@ -19,9 +19,11 @@
 
 ### Как собрать бэкенд
 
-Скачайте код:
+Python 3.6, git и poetry должны быть уже установлены.
+
+Клонируйте репозиторий:
 ```sh
-git clone https://github.com/devmanorg/star-burger.git
+git clone https://github.com/balancy/star-burger
 ```
 
 Перейдите в каталог проекта:
@@ -29,28 +31,10 @@ git clone https://github.com/devmanorg/star-burger.git
 cd star-burger
 ```
 
-[Установите Python](https://www.python.org/), если этого ещё не сделали.
-
-Проверьте, что `python` установлен и корректно настроен. Запустите его в командной строке:
+В каталоге проекта установите все зависимости и активируйте виртуальное окружение:
 ```sh
-python --version
-```
-**Важно!** Версия Python должна быть не ниже 3.6.
-
-Возможно, вместо команды `python` здесь и в остальных инструкциях этого README придётся использовать `python3`. Зависит это от операционной системы и от того, установлен ли у вас Python старой второй версии. 
-
-В каталоге проекта создайте виртуальное окружение:
-```sh
-python -m venv venv
-```
-Активируйте его. На разных операционных системах это делается разными командами:
-- Windows: `.\venv\Scripts\activate`
-- MacOS/Linux: `source venv/bin/activate`
-
-
-Установите зависимости в виртуальное окружение:
-```sh
-pip install -r requirements.txt
+poetry install
+poetry shell
 ```
 
 Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
@@ -58,6 +42,10 @@ pip install -r requirements.txt
 ```sh
 python manage.py migrate
 ```
+
+Cоздайте файл `.env` в каталоге проекта со следующими переменными окружения:
+
+- `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 
 Запустите сервер:
 

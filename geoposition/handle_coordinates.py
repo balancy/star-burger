@@ -4,7 +4,7 @@ from .models import Place
 
 
 def check_places_presence_in_db(orders, menu_items, apikey):
-    """Check if palces with specified addresses are already in the database.
+    """Check if places with specified addresses are already in the database.
     If at least one place is not in the database, function add the place with
     coordinates to the database.
 
