@@ -12,7 +12,6 @@ from geoposition.handle_coordinates import (
     fill_db_with_missing_places,
     get_missing_in_db_places,
 )
-from .utils import add_matching_restaurants_to_orders
 
 
 class Login(forms.Form):
@@ -121,22 +120,22 @@ def view_restaurants(request):
 def view_orders(request):
     apikey = settings.YANDEX_API_TOKEN
 
+    available_menu_items = RestaurantMenuItem.objects.select_related(
+        'restaurant',
+        'product',
+    ).filter(availability=True)
+
     orders = (
         Order.objects.prefetch_related('order_positions__product')
         .filter(status='UNPROCESSED')
         .with_total_prices()
     )
 
-    available_menu_items = RestaurantMenuItem.objects.select_related(
-        'restaurant',
-        'product',
-    ).filter(availability=True)
-
     missing_places = get_missing_in_db_places(orders, available_menu_items)
     if missing_places:
         fill_db_with_missing_places(missing_places, apikey)
 
-    add_matching_restaurants_to_orders(orders, available_menu_items)
+    orders.add_restaurants_with_distances(available_menu_items)
 
     return render(
         request,
