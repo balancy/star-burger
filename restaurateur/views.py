@@ -8,8 +8,11 @@ from django.urls import reverse_lazy
 from django.views import View
 
 from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
+from geoposition.handle_coordinates import (
+    fill_db_with_missing_places,
+    get_missing_in_db_places,
+)
 from .utils import add_matching_restaurants_to_orders
-from geoposition.handle_coordinates import check_places_presence_in_db
 
 
 class Login(forms.Form):
@@ -129,7 +132,9 @@ def view_orders(request):
         'product',
     ).filter(availability=True)
 
-    check_places_presence_in_db(orders, available_menu_items, apikey)
+    missing_places = get_missing_in_db_places(orders, available_menu_items)
+    if missing_places:
+        fill_db_with_missing_places(missing_places, apikey)
 
     add_matching_restaurants_to_orders(orders, available_menu_items)
 

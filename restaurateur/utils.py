@@ -42,12 +42,16 @@ def add_matching_restaurants_to_orders(orders, available_menu_items):
         restaurants_with_distances = [
             (
                 restaurant,
-                '{:.3f}'.format(
-                    distance.distance(
-                        places[order.address],
-                        places[restaurant.address],
-                    ).km
-                ),
+                (
+                    '{:.3f} км'.format(
+                        distance.distance(
+                            order_coordinates,
+                            places[restaurant.address],
+                        ).km
+                    )
+                )
+                if not None in (order_coordinates := places[order.address])
+                else 'адрес не распознан',
             )
             for restaurant in matching_restaurants
         ]

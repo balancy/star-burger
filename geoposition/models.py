@@ -12,12 +12,16 @@ class Place(models.Model):
         'широта',
         max_digits=6,
         decimal_places=3,
+        null=True,
+        blank=True,
     )
 
     longitude = models.DecimalField(
         'долгота',
         max_digits=6,
         decimal_places=3,
+        null=True,
+        blank=True,
     )
 
     updated_at = models.DateTimeField(
