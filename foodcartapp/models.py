@@ -138,7 +138,7 @@ class Order(models.Model):
         blank=True,
     )
 
-    contact_phone = PhoneNumberField('номер телефона')
+    contact_phone = PhoneNumberField('номер телефона', db_index=True)
 
     restaurant = models.ForeignKey(
         Restaurant,
@@ -154,6 +154,7 @@ class Order(models.Model):
         choices=OrderStatus.choices,
         default=OrderStatus.UNPROCESSED,
         verbose_name='статус',
+        db_index=True,
     )
 
     comment = models.TextField('комментарий', blank=True, max_length=200)
@@ -161,18 +162,21 @@ class Order(models.Model):
     registered_at = models.DateTimeField(
         'дата регистрации',
         default=timezone.now,
+        db_index=True,
     )
 
     called_at = models.DateTimeField(
         'дата звонка',
         blank=True,
         null=True,
+        db_index=True,
     )
 
     delivered_at = models.DateTimeField(
         'дата доставки',
         blank=True,
         null=True,
+        db_index=True,
     )
 
     payment_method = models.CharField(
@@ -180,6 +184,7 @@ class Order(models.Model):
         choices=OrderPaymentMethod.choices,
         default=OrderPaymentMethod.ONLINE,
         verbose_name='способ оплаты',
+        db_index=True,
     )
 
     objects = OrderQuerySet.as_manager()
