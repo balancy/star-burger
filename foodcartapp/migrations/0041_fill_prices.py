@@ -8,10 +8,9 @@ def fill_prices_in_order_positions(apps, schema_editor):
     OrderPosition = apps.get_model('foodcartapp', 'OrderPosition')
     order_positions = OrderPosition.objects.select_related('product')
 
-    for position in order_positions:
+    for position in order_positions.iterator():
         position.price = position.product.price
-
-    OrderPosition.objects.bulk_update(order_positions, ['price'])
+        position.save()
 
 
 class Migration(migrations.Migration):
