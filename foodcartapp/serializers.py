@@ -31,10 +31,5 @@ class OrderSerializer(serializers.ModelSerializer):
         child=OrderPositionSerializer(), allow_empty=False, write_only=True
     )
 
-    def validate_phonenumber(self, value):
-        if not ph_n.is_valid_number(ph_n.parse(value, 'RU')):
-            raise ValidationError('Некорректное значение')
-        return value
-
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
