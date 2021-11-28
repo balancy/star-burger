@@ -10,7 +10,7 @@ from django.views import View
 from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
 from geoposition.handle_coordinates import (
     fill_db_with_missing_places,
-    get_missing_in_db_places,
+    get_places_missing_in_db,
 )
 
 
@@ -131,7 +131,7 @@ def view_orders(request):
         .with_total_prices()
     )
 
-    missing_places = get_missing_in_db_places(orders, available_menu_items)
+    missing_places = get_places_missing_in_db(orders, available_menu_items)
     if missing_places:
         fill_db_with_missing_places(missing_places, apikey)
 

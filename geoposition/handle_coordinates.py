@@ -3,7 +3,7 @@ import requests
 from .models import Place
 
 
-def get_missing_in_db_places(orders, menu_items):
+def get_places_missing_in_db(orders, menu_items):
     """Return set of places with specified addresses that are not yet in the database.
 
     Args:
