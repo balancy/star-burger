@@ -132,9 +132,13 @@ class OrderQuerySet(models.QuerySet):
             available_menu_items: all available menu items
         """
 
+        addresses = {
+            menu_item.restaurant.address for menu_item in available_menu_items
+        }.union({address['address'] for address in self.values('address')})
+
         places = {
             place.address: (place.latitude, place.longitude)
-            for place in Place.objects.all()
+            for place in Place.objects.filter(address__in=addresses)
         }
 
         for order in self:
