@@ -198,7 +198,6 @@ class Order(models.Model):
     address = models.CharField(
         'адрес',
         max_length=100,
-        blank=True,
     )
 
     contact_phone = PhoneNumberField('номер телефона', db_index=True)
