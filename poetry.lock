@@ -116,7 +116,7 @@ python-versions = "*"
 
 [[package]]
 name = "django"
-version = "3.2"
+version = "3.2.5"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -555,7 +555,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "b5f8b28ffb4a862c3376ba5bdea33b57cf771f5d89e72f53aed28dd4502cdbf7"
+content-hash = "f69066cd0b7f0834ea99b3e2bb8ce68ddbb75a7e07616633d57b078de4833224"
 
 [metadata.files]
 appnope = [
@@ -603,8 +603,8 @@ dj-email-url = [
     {file = "dj_email_url-1.0.2-py2.py3-none-any.whl", hash = "sha256:15148141c6ef123636e4ca3663e95231ed94ca5ed267e91977e5a4397be8b34c"},
 ]
 django = [
-    {file = "Django-3.2-py3-none-any.whl", hash = "sha256:0604e84c4fb698a5e53e5857b5aea945b2f19a18f25f10b8748dbdf935788927"},
-    {file = "Django-3.2.tar.gz", hash = "sha256:21f0f9643722675976004eb683c55d33c05486f94506672df3d6a141546f389d"},
+    {file = "Django-3.2.5-py3-none-any.whl", hash = "sha256:c58b5f19c5ae0afe6d75cbdd7df561e6eb929339985dbbda2565e1cabb19a62e"},
+    {file = "Django-3.2.5.tar.gz", hash = "sha256:3da05fea54fdec2315b54a563d5b59f3b4e2b1e69c3a5841dda35019c01855cd"},
 ]
 django-cache-url = [
     {file = "django-cache-url-3.2.3.tar.gz", hash = "sha256:c1d45626ae8a206267c1263aa7a3461e2e186be2e939bcbd8c660e25851ddac8"},

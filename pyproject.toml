@@ -6,7 +6,7 @@ authors = ["balancy <balancy@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = "3.2"
+Django = "3.2.5"
 django-debug-toolbar = "3.2.1"
 Pillow = "8.2.0"
 environs = {version = "9.3.2", extras = ["django"]}
