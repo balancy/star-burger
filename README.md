@@ -134,11 +134,11 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 - `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
-- `SQL_HOST` - имя или ip адрес хоста
-- `SQL_ENGINE` - движок, например, django.db.backends.postgresql
-- `SQL_DB` - имя базы данных
-- `SQL_USER` - пользователь базы данных с администраторскими правами
-- `SQL_PASSWORD` - пароль пользователя
+- `SQL_HOST` - имя или ip адрес хоста. Поставьте `0.0.0.0`.
+- `SQL_ENGINE` - sql-движок. Поставьте `django.db.backends.postgresql`.
+- `SQL_DB` - имя базы данных. Например, `star-burger-db`.
+- `SQL_USER` - пользователь базы данных с администраторскими правами. Например, `admin`.
+- `SQL_PASSWORD` - пароль пользователя.
 
 ## Цели проекта
 
