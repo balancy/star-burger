@@ -46,6 +46,7 @@ python manage.py migrate
 Cоздайте файл `.env` в каталоге проекта со следующими переменными окружения:
 
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
+- `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
 
 Запустите сервер:
 
@@ -132,6 +133,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
+- `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
 
 ## Цели проекта
 
