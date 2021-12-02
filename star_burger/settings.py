@@ -1,5 +1,6 @@
 import os
 
+import dj_database_url
 import rollbar
 from environs import Env
 
@@ -86,14 +87,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('SQL_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('SQL_DB', os.path.join(BASE_DIR, 'db.sqlite3')),
-        'USER': os.getenv('SQL_USER', 'user'),
-        'PASSWORD': os.getenv('SQL_PASSWORD', 'password'),
-        'HOST': os.getenv('SQL_HOST', 'localhost'),
-        'PORT': 5432,
-    }
+    'default': dj_database_url.config(default=os.getenv('DEFAULT_DB_PATH'))
 }
 
 AUTH_PASSWORD_VALIDATORS = [
