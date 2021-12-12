@@ -19,7 +19,34 @@
 
 ### Как собрать бэкенд
 
-Python 3.6, git и poetry должны быть уже установлены.
+Python 3.9, git и poetry должны быть уже установлены.
+
+Будет нужна база данных. Для этого установите `postgreql`.
+
+```bash
+sudo apt install postgresql postgresql-contrib
+```
+
+Запустите сервис `postgresql`.
+
+```bash
+sudo service postgresql status
+```
+
+Создайте базу данных, пользователя и пароль.
+
+```bash
+sudo -u postgres psql
+create database star_burger;
+create user admin with encrypted password 'password';
+grant all privileges on database star_burger to admin;
+```
+
+Выйдите из консоли работы с сервисом `postgresql`.
+
+```bash
+\q
+```
 
 Клонируйте репозиторий:
 ```sh
@@ -37,11 +64,11 @@ poetry install
 poetry shell
 ```
 
+
 Cоздайте файл `.env` в каталоге проекта со следующими переменными окружения:
 
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 - `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
-- `DEFAULT_DB_PATH` - путь до БД. Строка вида `postgres://username:password@0.0.0.0:5432/db_name`. Меняете своё имя пользователя, пароль и имя базы данных.
 
 Создайте базу данных и мигрируйте её следующей командой:
 

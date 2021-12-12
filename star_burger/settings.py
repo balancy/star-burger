@@ -88,8 +88,8 @@ MEDIA_URL = '/media/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'NAME': os.getenv('POSTGRES_DB', 'star_burger'),
+        'USER': os.getenv('POSTGRES_USER', 'admin'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
         'HOST': os.getenv('SQL_HOST', 'localhost'),
         'PORT': 5432,
