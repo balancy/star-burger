@@ -1,6 +1,5 @@
 import os
 
-import dj_database_url
 import rollbar
 from environs import Env
 
@@ -87,7 +86,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DEFAULT_DB_PATH'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
+        'HOST': os.getenv('SQL_HOST', 'localhost'),
+        'PORT': 5432,
+    },
 }
 
 AUTH_PASSWORD_VALIDATORS = [
