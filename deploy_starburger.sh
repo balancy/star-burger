@@ -4,7 +4,7 @@ set -e
 
 git pull
 poetry install
-python manage.py migrate
+python manage.py migrate --no-input
 python manage.py collectstatic --no-input
 
 npm install
