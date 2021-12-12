@@ -172,7 +172,9 @@ Cоздайте файл `.env` в каталоге проекта со след
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 - `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
-- `DEFAULT_DB_PATH` - путь до БД. Строка вида `postgres://username:password@0.0.0.0:5432/db_name`. Меняете своё имя пользователя, пароль и имя базы данных.
+- `POSTGRES_DB` - имя базы данных
+- `POSTGRES_USER` - пользователь базы данных
+- `POSTGRES_PASSWORD` - пароль к базе данных
 
 Запустите скрипт деплоя:
 
