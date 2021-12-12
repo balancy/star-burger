@@ -155,8 +155,8 @@ Cоздайте файл `.env` в каталоге проекта со след
 
 ## Координаты проекта
 
-- `https://rksokserver.ru/` - домен
-- `138.68.86.42` - IP адрес
+- [https://rksokserver.ru/](https://rksokserver.ru/) - домен
+- [138.68.86.42](138.68.86.42) - IP адрес
 - `balancy` - имя пользователя
 - `/home/balancy/star-burger/deploy_starburger.sh` - место нахождения деплойного скрипта
 
