@@ -19,7 +19,7 @@
 
 ### Как собрать бэкенд
 
-Python 3.9, git и poetry должны быть уже установлены.
+Python 3.8, git и poetry должны быть уже установлены.
 
 Будет нужна база данных. Для этого установите `postgreql`.
 
@@ -30,7 +30,7 @@ sudo apt install postgresql postgresql-contrib
 Запустите сервис `postgresql`.
 
 ```bash
-sudo service postgresql status
+sudo service postgresql start
 ```
 
 Создайте базу данных, пользователя и пароль.
@@ -64,18 +64,16 @@ poetry install
 poetry shell
 ```
 
-
 Cоздайте файл `.env` в каталоге проекта со следующими переменными окружения:
 
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 - `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
 
-Создайте базу данных и мигрируйте её следующей командой:
+Мигрируйте структуру базы данных следующей командой:
 
 ```sh
 python manage.py migrate
 ```
-
 
 Запустите сервер:
 
@@ -150,6 +148,8 @@ Parcel будет следить за файлами в каталоге `bundle
 
 ## Как запустить prod-версию сайта
 
+В production-версии нужна будет поддержка [docker](https://docs.docker.com/get-docker/) и [docker-compose](https://docs.docker.com/compose/install/).
+
 Клонируйте репозиторий:
 ```sh
 git clone https://github.com/balancy/star-burger
@@ -160,18 +160,20 @@ git clone https://github.com/balancy/star-burger
 cd star-burger
 ```
 
-В каталоге проекта активируйте виртуальное окружение:
-```sh
-poetry shell
-```
-
-Cоздайте файл `.env` в каталоге проекта со следующими настройками:
+Cоздайте файл `.env.dev` в каталоге проекта со следующими настройками:
 
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
-- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 - `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
+- `POSTGRES_DB` - имя базы данных
+- `POSTGRES_USER` - пользователь базы данных
+- `POSTGRES_PASSWORD` - пароль к базе данных
+- `SQL_HOST` - Поставьте `db`. Это будет имя вашей базы данных в докер контейнере.
+
+Cоздайте файл `.env.dev.db` в каталоге проекта и скопируйте сюда следующие переменные окружения из файла `.env.dev`:
+
 - `POSTGRES_DB` - имя базы данных
 - `POSTGRES_USER` - пользователь базы данных
 - `POSTGRES_PASSWORD` - пароль к базе данных
@@ -179,8 +181,36 @@ Cоздайте файл `.env` в каталоге проекта со след
 Запустите скрипт деплоя:
 
 ```bash
-./deploy_start_burger.sh
+./deploy_startburger.sh
 ```
+
+Вам нужно будет еще настроить сервис `nginx` как проксирующий сервис для раздачи статики вашего приложения.
+
+Пример такой настройки:
+
+```
+server {
+    listen <your_ip_address>:80;
+
+    location / {
+	include '/etc/nginx/proxy_params';
+        proxy_pass http://localhost:8080;
+    }
+
+    location /static/ {
+        alias <path_to_your_django_app>/staticfiles/;
+    }
+
+    location /media/ {
+        alias <path_to_your_django_app>/media/;
+    }
+}
+```
+
+где
+
+- `<your_ip_address>` - ip-адрес сервера, где вы запускаете приложение
+- `<path_to_your_django_app>` - абсолютный путь к вашему проекту на сервере
 
 ## Координаты проекта
 
@@ -188,11 +218,3 @@ Cоздайте файл `.env` в каталоге проекта со след
 - [138.68.86.42](http://138.68.86.42) - IP адрес
 - `balancy` - имя пользователя
 - `/home/balancy/star-burger/deploy_starburger.sh` - место нахождения деплойного скрипта
-
-## Цели проекта
-
-Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
-
-Где используется репозиторий:
-
-- Второй и третий урок [учебного модуля Django](https://dvmn.org/modules/django/)
