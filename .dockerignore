@@ -6,9 +6,6 @@ __pycache__
 .env.example
 .parcel-cache
 .venv
-assets
-bundles
-bundles-src
 deploy_starburger.sh
 Dockerfile
 docker-compose.yml

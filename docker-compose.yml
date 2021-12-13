@@ -24,17 +24,6 @@ services:
     depends_on:
       - db
 
-  nginx:
-    restart: always
-    build: ./nginx
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
-    ports:
-      - "80:80"
-    depends_on:
-      - starburger_gunicorn
-
 volumes:
   media_volume: null
   postgres_data: null
