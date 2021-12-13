@@ -7,11 +7,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env.dev
+      - ./.env.dev.db
     ports:
       - "5432:5432"
 
-  starburger_gunicorn:
+  django:
     restart: always
     volumes:
       - static_volume:/app/staticfiles

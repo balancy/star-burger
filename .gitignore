@@ -146,3 +146,4 @@ cython_debug/
 staticfiles/
 db.json
 .env.dev
+.env.dev.db
