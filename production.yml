@@ -8,23 +8,25 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     container_name: db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     env_file:
-      - ./.env.dev
+      - ./.env.prod
 
   django:
     restart: always
     volumes:
       - ./media:/app/media
-    command: python manage.py runserver 0.0.0.0:8000
+      - static_volume:/app/staticfiles
+    command: gunicorn star_burger.wsgi:application --bind 0.0.0.0:8080
     container_name: django
     build: ./
     env_file:
-      - ./.env.dev
+      - ./.env.prod
     ports:
-      - "8080:8000"
+      - "8080:8080"
     depends_on:
       - db
 
 volumes:
+  static_volume: null
   postgres_data: null

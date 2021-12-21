@@ -6,13 +6,15 @@ echo "Fetching repo updates"
 git pull
 
 echo "Building frontend"
-sudo docker build -t star-burger_frontend -f Dockerfile-frontend .
+sudo docker build -t star-burger_frontend -f Dockerfile.frontend .
 sudo docker run --rm -v $(pwd)/bundles:/app/bundles star-burger_frontend
 
 echo "Setting up backend"
 sudo docker-compose build
-sudo docker-compose -d up
-sudo docker rmi $(docker images -f "dangling=true")
+docker-compose --env-file ./.env up -d
+
+echo "Clearing unused docker items"
+sudo docker system prune -f
 
 curl -X POST https://api.rollbar.com/api/1/deploy \
      -H "X-Rollbar-Access-Token: "$(awk -F'=' '/^ROLLBAR_ACCESS_TOKEN/ { print $2}' .env.dev)"" \

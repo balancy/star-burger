@@ -1,7 +1,8 @@
 import os
 
-import rollbar
+from django.core.management.utils import get_random_secret_key
 from environs import Env
+import rollbar
 
 
 env = Env()
@@ -11,12 +12,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-SECRET_KEY = env('SECRET_KEY', 'etirgvonenrfnoerngorenogneongg334g')
+SECRET_KEY = env('SECRET_KEY', get_random_secret_key())
 DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = env.str('ALLOWED_HOSTS', '127.0.0.1 localhost').split()
 
-YANDEX_API_TOKEN = env.str('YANDEX_API_TOKEN')
+YANDEX_API_TOKEN = env.str('YANDEX_API_TOKEN', '11111')
 
 INSTALLED_APPS = [
     'foodcartapp.apps.FoodcartappConfig',
@@ -87,8 +88,8 @@ MEDIA_URL = '/media/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'star_burger'),
+        'ENGINE': os.getenv('SQL_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.getenv('POSTGRES_DB', '{}/db.sqlite3'.format(BASE_DIR)),
         'USER': os.getenv('POSTGRES_USER', 'admin'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
         'HOST': os.getenv('SQL_HOST', 'localhost'),
@@ -134,7 +135,7 @@ STATICFILES_DIRS = [
 PHONENUMBER_DEFAULT_REGION = "RU"
 
 ROLLBAR = {
-    'access_token': env.str('ROLLBAR_ACCESS_TOKEN'),
+    'access_token': env.str('ROLLBAR_ACCESS_TOKEN', '11111'),
     'environment': 'development' if DEBUG else 'production',
     'root': BASE_DIR,
 }

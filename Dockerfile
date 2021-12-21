@@ -4,12 +4,13 @@ RUN mkdir /app
 
 WORKDIR /app
 
-COPY pyproject.toml .
+ENV PYTHONDONTWRITEBYTECODE 1 \
+    PYTHONUNBUFFERED 1
 
-RUN pip install poetry \
-    && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+RUN python3 manage.py collectstatic --no-input
