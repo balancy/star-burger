@@ -28,4 +28,5 @@ curl -X POST https://api.rollbar.com/api/1/deploy \
         "comment": "deploy"
 }'
 
+echo
 echo "Project deployed successfully"
