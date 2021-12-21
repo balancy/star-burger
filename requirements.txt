@@ -1,4 +1,4 @@
-Django==3.2.5
+Django==3.2.10
 django-debug-toolbar==3.2.1
 Pillow==8.4.0
 environs==9.3.2
