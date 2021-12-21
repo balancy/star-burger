@@ -10,8 +10,9 @@ sudo docker build -t star-burger_frontend -f Dockerfile.frontend .
 sudo docker run --rm -v $(pwd)/bundles:/app/bundles star-burger_frontend
 
 echo "Setting up backend"
-sudo docker-compose build -f production.yml
-sudo docker-compose -f production.yml --env-file ./.env.prod up -d
+sudo docker-compose -f production.yml build
+sudo docker-compose -f production.yml up -d
+sudo docker cp django:/app/staticfiles staticfiles
 
 echo "Clearing unused docker items"
 sudo docker system prune -f
