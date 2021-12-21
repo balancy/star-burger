@@ -10,14 +10,14 @@ sudo docker build -t star-burger_frontend -f Dockerfile.frontend .
 sudo docker run --rm -v $(pwd)/bundles:/app/bundles star-burger_frontend
 
 echo "Setting up backend"
-sudo docker-compose build
-docker-compose --env-file ./.env up -d
+sudo docker-compose build -f production.yml
+sudo docker-compose -f production.yml --env-file ./.env.prod up -d
 
 echo "Clearing unused docker items"
 sudo docker system prune -f
 
 curl -X POST https://api.rollbar.com/api/1/deploy \
-     -H "X-Rollbar-Access-Token: "$(awk -F'=' '/^ROLLBAR_ACCESS_TOKEN/ { print $2}' .env.dev)"" \
+     -H "X-Rollbar-Access-Token: "$(awk -F'=' '/^ROLLBAR_ACCESS_TOKEN/ { print $2}' .env.prod)"" \
      -H "Content-Type: application/json" \
      -d $'{
         "environment": "production",
