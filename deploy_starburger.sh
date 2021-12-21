@@ -27,7 +27,7 @@ curl -X POST https://api.rollbar.com/api/1/deploy \
         "rollbar_username": "'"$(whoami)"'",
         "local_username": "'"$(git config user.name)"'",
         "comment": "deploy"
-}'
+}' > /dev/null
 
 echo
 echo "Project deployed successfully"
