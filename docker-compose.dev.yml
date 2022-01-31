@@ -12,19 +12,31 @@ services:
     env_file:
       - ./.env.dev
 
+  frontend:
+    restart: always
+    volumes:
+      - ./:/app
+    build:
+      context: ./
+      dockerfile: dockerfiles/Dockerfile.frontend
+    command: parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
+
   django:
     restart: always
     volumes:
-      - ./media:/app/media
+      - ./:/app
     command: python manage.py runserver 0.0.0.0:8000
     container_name: django
-    build: ./
+    build:
+      context: ./
+      dockerfile: dockerfiles/Dockerfile.backend
     env_file:
       - ./.env.dev
     ports:
       - "8080:8000"
     depends_on:
       - db
+      - frontend
 
 volumes:
   postgres_data: null

@@ -142,31 +142,29 @@ git clone https://github.com/balancy/star-burger
 cd star-burger
 ```
 
-Переименуйте `.env.dev.example` в `.env.dev` и определите следующие переменные окружения:
+Создайте копию файла `.env.dev.example` и назовите его `.env.dev`
+
+```sh
+cp dockerfiles/.env.dev.example .env.dev
+```
+
+Определите в файле `.env.dev` следующие переменные окружения:
 
 - `ROLLBAR_ACCESS_TOKEN`- Токен встраиваемого в приложение модуля платформы отслеживания ошибок [Rollbar](https://rollbar.com/). Можно получить в кабинете разработчика.
 - `YANDEX_API_TOKEN` — Токен API Яндекса для использования координат местоположения. Можно получить в [кабинете разработчика](https://developer.tech.yandex.ru/services/).
 
-Остальные переменные можете оставить по умолчанию.
+Остальные переменные можете оставить без изменения.
 
-Соберите статику фронтенда:
-
-```sh
-docker build -t star-burger_frontend -f Dockerfile.frontend .
-docker run --rm -v $(pwd)/bundles:/app/bundles star-burger_frontend
-```
-
-Соберите образы и запустите контейнеры бэкенда:
+Соберите необходимые образы и запустите контейнеризированное приложение:
 
 ```sh
-docker-compose build
-docker-compose up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 Мигрируйте структуру базы данных следующей командой:
 
 ```sh
-docker-compose exec -t django python manage.py migrate
+docker exec -t django python manage.py migrate
 ```
 
 Сайт будет доступен в браузере по адресу [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
@@ -185,7 +183,13 @@ git clone https://github.com/balancy/star-burger
 cd star-burger
 ```
 
-Переименуйте `.env.prod.example` в `.env.prod` и определите следующие переменные окружения:
+Создайте копию файла `.env.prod.example` и назовите его `.env.prod`
+
+```sh
+cp dockerfiles/.env.prod.example .env.prod
+```
+
+Определите в файле `.env.prod` следующие переменные окружения:
 
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
 - `POSTGRES_DB` - имя базы данных
@@ -200,14 +204,14 @@ cd star-burger
 Запустите скрипт деплоя:
 
 ```bash
-./deploy_starburger.sh
+./deploy_script.sh
 ```
 
 Вам нужно будет еще настроить сервис `nginx` как проксирующий сервис для раздачи статики вашего приложения.
 
 Пример такой настройки:
 
-```
+```sh
 server {
     listen <your_ip_address>:80;
 
@@ -230,10 +234,3 @@ server {
 
 - `<your_ip_address>` - ip-адрес сервера, где вы запускаете приложение
 - `<path_to_your_django_app>` - абсолютный путь к вашему проекту на сервере
-
-## Координаты проекта
-
-- [https://rksokserver.ru/](https://rksokserver.ru/) - домен
-- [138.68.86.42](http://138.68.86.42) - IP адрес
-- `balancy` - имя пользователя
-- `/home/balancy/star-burger/deploy_starburger.sh` - место нахождения деплойного скрипта

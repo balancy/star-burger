@@ -19,7 +19,9 @@ services:
       - static_volume:/app/staticfiles
     command: gunicorn star_burger.wsgi:application --bind 0.0.0.0:8080
     container_name: django
-    build: ./
+    build:
+      context: ./
+      dockerfile: dockerfiles/Dockerfile.backend
     env_file:
       - ./.env.prod
     ports:

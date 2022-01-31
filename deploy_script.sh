@@ -6,12 +6,11 @@ echo "Fetching repo updates"
 git pull
 
 echo "Building frontend"
-sudo docker build -t star-burger_frontend -f Dockerfile.frontend .
+sudo docker build -t star-burger_frontend -f dockerfiles/Dockerfile.frontend .
 sudo docker run --rm -v $(pwd)/bundles:/app/bundles star-burger_frontend
 
 echo "Setting up backend"
-sudo docker-compose -f production.yml build
-sudo docker-compose -f production.yml up -d
+sudo docker-compose -f docker-compose.prod.yml up -d
 sudo docker-compose exec -t django python manage.py migrate
 sudo docker cp django:/app/staticfiles staticfiles
 
