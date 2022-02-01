@@ -11,8 +11,8 @@ sudo docker run --rm -v $(pwd)/bundles:/app/bundles star-burger_frontend
 
 echo "Setting up backend"
 sudo docker-compose -f docker-compose.prod.yml up -d
-sudo docker-compose exec -t django python manage.py migrate
-sudo docker cp django:/app/staticfiles staticfiles
+sudo docker exec -t django python manage.py migrate
+sudo docker cp django:/app/staticfiles .
 
 echo "Clearing unused docker items"
 sudo docker system prune -f
